@@ -1,0 +1,9 @@
+{
+  "name": "Aquafarm",
+  "displayName": "Aquafarm",
+  "extra": {
+    "eas": {
+      "projectId": "d5c73c42-cb17-4907-a989-40b5cc330d47"
+    }
+  }
+}
