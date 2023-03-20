@@ -36,6 +36,7 @@ export default TableData = ({ navigation, route }) => {
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
+        navigation.navigate('Login');
       });
     // setTimeout(() => { 
     //   // getEdgeServerInfo();
@@ -66,9 +67,9 @@ export default TableData = ({ navigation, route }) => {
       setSensor2([]);
       setSensor3([]);
       setSensor4([]);
-      for(let i = json.length - 1; i >= 0; i-- )
+      for(let i = 0; i < json.length; i++ )
       {
-        setTimes(times => [...times, json[i].received_at.substring(11,16)])
+        setTimes(times => [...times, json[i].received_at.substring(0,10) + " " + (Number(json[i].received_at.substring(11,13))+7) + json[i].received_at.substring(13,19) + "(+7)"])
         let data = Buffer(json[i].data).toString("utf8");
         // console.log(data);
         const _4data = data.split("/");
@@ -173,14 +174,14 @@ export default TableData = ({ navigation, route }) => {
         {
           dataLoaded ? (
             <View>
-              <Text>Chart of sensor {sensorType_chart}</Text>
+              <Text>Giá trị chi tiết theo thời gian của cảm biến {sensorType_chart}</Text>
               <ScrollView>
                 <View style={{ flexDirection: "row", width: "100%", borderColor: "#ffffff", borderWidth: 1 }}>
                   <View style={{ padding: 10, backgroundColor: "#dedede", width: "40%" }}>
-                    <Text>Time</Text>
+                    <Text>Thời gian</Text>
                   </View>
                   <View style={{ padding: 10, backgroundColor: "#d0d0d0", width: "60%" }}>
-                    <Text>Value</Text>
+                    <Text>Giá trị cảm biến</Text>
                   </View>
                 </View>
 

@@ -14,7 +14,13 @@ export default Chart = ({ navigation, route }) => {
   const [sensor3, setSensor3] = useState([]);
   const [sensor4, setSensor4] = useState([]);
 
+  const [relayStt, setRelayStt] = useState(["0","0","0","0","0","0","0","0"]);
+
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  const delay = ms => new Promise(
+    resolve => setTimeout(resolve, ms)
+  );
   
   const onRefresh = async () => {
     const TokenValue = await AsyncStorage.getItem("token");
@@ -36,6 +42,7 @@ export default Chart = ({ navigation, route }) => {
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
+        navigation.navigate('Login');
       });
     // setTimeout(() => { 
     //   // getEdgeServerInfo();
@@ -43,19 +50,28 @@ export default Chart = ({ navigation, route }) => {
     // }, 5000);
   };
 
-  // const bufferToData = (value) => {
-  //   let data = Buffer(value.data).toString("utf8");
-  //   // console.log(data);
-  //   const _4data = data.split("/");
-  //   if(_4data.length == 4 )
-  //   {
-  //     return _4data
-  //   }
-  //   else
-  //   {
-  //     return [0, 0, 0, 0]
-  //   }
-  // }
+  const controlRelay = async (devEui, message ) => {
+    const TokenValue = await AsyncStorage.getItem("token");
+    fetch('http://35.79.124.43:3000/data/'+ devEui, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + TokenValue
+      },
+      body: JSON.stringify({
+        "data" : message
+      })
+    }).then((response) => response.json())
+      .then( async (json) => {
+        console.log(json);
+        await delay(3000);
+        onRefresh();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const jsonToArrayData = (json) => {
     try
@@ -66,18 +82,22 @@ export default Chart = ({ navigation, route }) => {
       setSensor2([]);
       setSensor3([]);
       setSensor4([]);
+
       for(let i = json.length - 1; i >= 0; i-- )
       {
-        setTimes(times => [...times, json[i].received_at.substring(11,16)])
+        setTimes(times => [...times, (Number(json[i].received_at.substring(11,13))+7)+json[i].received_at.substring(13,16)])
+
+        // console.log(json[i].received_at.substring(11,13)-(-7)+json[i].received_at.substring(13,16)); Thay mui gio +7
         let data = Buffer(json[i].data).toString("utf8");
         // console.log(data);
-        const _4data = data.split("/");
-        if(_4data.length == 5 )
+        const _5data = data.split("/");
+        if(_5data.length == 5 )
         {
-          setSensor1(sensor1 => [...sensor1, Number(_4data[0].slice(1))]);
-          setSensor2(sensor2 => [...sensor2, Number(_4data[1].slice(1))]);
-          setSensor3(sensor3 => [...sensor3, Number(_4data[2].slice(1))]);
-          setSensor4(sensor4 => [...sensor4, Number(_4data[3].slice(1))]);
+          setSensor1(sensor1 => [...sensor1, Number(_5data[0].slice(1))]);
+          setSensor2(sensor2 => [...sensor2, Number(_5data[1].slice(1))]);
+          setSensor3(sensor3 => [...sensor3, Number(_5data[2].slice(1))]);
+          setSensor4(sensor4 => [...sensor4, Number(_5data[3].slice(1))]);
+          setRelayStt([_5data[4][0],_5data[4][1],_5data[4][2],_5data[4][3],_5data[4][4],_5data[4][5],_5data[4][6],_5data[4][7]]);
         }
         else
         {
@@ -85,6 +105,7 @@ export default Chart = ({ navigation, route }) => {
           setSensor2(sensor2 => [...sensor2, 0]);
           setSensor3(sensor3 => [...sensor3, 0]);
           setSensor4(sensor4 => [...sensor4, 0]);
+          setRelayStt(["0","0","0","0","0","0","0","0"])
         }
       }
       // console.log(sensor1);
@@ -97,15 +118,13 @@ export default Chart = ({ navigation, route }) => {
 
   useEffect(() => {
     onRefresh();
-  }, [])
+  }, []);
   useEffect(() => {
-    console.log("data CHANGED");
-    // console.log(times);
-    // console.log(sensor1);
-    // console.log(sensor2);
-    // console.log(sensor3);
-    // console.log(sensor4);
-  }, [refreshing])
+    console.log("data CHANGED - Reload UI");
+  }, [refreshing]);
+  useEffect(() => {
+    console.log("relay CHANGED - Reload UI");
+  }, [relayStt]);
 
   return(
     <View style={{ flex: 1 }}>
@@ -120,8 +139,37 @@ export default Chart = ({ navigation, route }) => {
       >
         {
           dataLoaded ? (
-            <View>
-              <Text>Chart of sensor Temperature</Text>
+            <View pointerEvents={ refreshing ? "none" : "auto"}>
+              <ScrollView style={{ paddingBottom: 10 }} horizontal={true}>
+                <View style={{ flexDirection: "row" }}>
+                  {
+                    relayStt && relayStt.map((val, index) =>
+                      val != null ?
+                        <View key={index}>
+                          <Text style={{ marginLeft: 18 }}>R{index+1}</Text>
+                          <Switch
+                            trackColor={{false: '#767577', true: '#09f21f'}}
+                            thumbColor={'#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={() => {
+                                relayStt[index] = (val == "1" ? 0 : 1)
+                                setRefreshing(true);
+                                controlRelay(devEUI_chart, "R" + (index+1) + (val == "1" ? 0 : 1))
+                                console.log("OnRelayChange: ", "R" + (index+1) + (val == "1" ? 0 : 1));
+                              }
+                            }
+                            value={val == "1" ? true : false}
+                          />
+                        </View>
+                      :
+                      null
+                    )
+                  }
+                </View>
+              </ScrollView>
+              
+              
+              <Text>Biểu đồ đo nhiệt độ</Text>
               {/* Chart of sensor 1 nhiet do, do, ph, nh3 */} 
               <TouchableOpacity 
               onPress={() => {
@@ -144,7 +192,7 @@ export default Chart = ({ navigation, route }) => {
                   width={Dimensions.get("window").width} // from react-native
                   height={220}
                   // yAxisLabel="$"
-                  xAxisLabel="+0"
+                  xAxisLabel=""
                   yAxisSuffix="&deg;C"
                   yAxisInterval={1} // optional, defaults to 1
                   chartConfig={{
@@ -171,7 +219,7 @@ export default Chart = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
 
-              <Text>Chart of sensor Dessolved Oxygen</Text>
+              <Text>Biểu đồ đo lượng Oxy hoà tan</Text>
               {/* Chart of sensor 2*/}
               <TouchableOpacity
               onPress={() => {
@@ -194,7 +242,7 @@ export default Chart = ({ navigation, route }) => {
                   width={Dimensions.get("window").width} // from react-native
                   height={220}
                   // yAxisLabel=""
-                  xAxisLabel="+0"
+                  xAxisLabel=""
                   yAxisSuffix="mg/l"
                   yAxisInterval={1} // optional, defaults to 1
                   chartConfig={{
@@ -221,7 +269,7 @@ export default Chart = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
 
-              <Text>Chart of sensor Pondus Hydrogenii</Text>
+              <Text>Biểu đồ đo giá trị pH</Text>
               {/* Chart of sensor 3*/}
               <TouchableOpacity
               onPress={() => {
@@ -244,7 +292,7 @@ export default Chart = ({ navigation, route }) => {
                   width={Dimensions.get("window").width} // from react-native
                   height={220}
                   // yAxisLabel="$"
-                  xAxisLabel="+0"
+                  xAxisLabel=""
                   yAxisSuffix="pH"
                   yAxisInterval={1} // optional, defaults to 1
                   chartConfig={{
@@ -271,7 +319,7 @@ export default Chart = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
 
-              <Text>Chart of sensor Amonia</Text>
+              <Text>Biểu đồ đo hàm lượng Amonia trong nước</Text>
               {/* Chart of sensor 4*/}
               <TouchableOpacity
               onPress={() => {
@@ -294,7 +342,7 @@ export default Chart = ({ navigation, route }) => {
                   width={Dimensions.get("window").width} // from react-native
                   height={220}
                   // yAxisLabel="$"
-                  xAxisLabel="+0"
+                  xAxisLabel=""
                   yAxisSuffix="kmol/L"
                   yAxisInterval={1} // optional, defaults to 1
                   chartConfig={{

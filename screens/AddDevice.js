@@ -63,17 +63,17 @@ export default AddDevice = ({ navigation, route }) => {
       <View style={{ paddingTop: 20 }}>
       {/* <View style={{ flex: 1, backgroundColor: '#673ab7' }} > */}
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <Text style={{ fontSize: 30, marginBottom: 10, fontWeight: "bold", alignSelf: "center" }}>Sensors</Text>
+          <Text style={{ fontSize: 30, marginBottom: 10, fontWeight: "bold", alignSelf: "center" }}>Thêm thiết bị</Text>
           <TouchableOpacity style={{ width: 60, height: 30, alignSelf: "center", alignItems: "center", borderRadius: 5, justifyContent: "center", position: "absolute", right: 10, backgroundColor: "#ffffff" }} 
           onPress={() => postDevicesOfUsers()}
           >
-            <Text>Save</Text>
+            <Text>Lưu</Text>
           </TouchableOpacity>
         </View>
         <View style={{ backgroundColor: "#efefef", marginVertical: 10}}>
           <View style={{ backgroundColor: "#ffffff", marginVertical: 20, marginHorizontal: 10, padding: 10, borderRadius: 10 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ fontSize: 16, marginLeft: 20, marginRight: 10, flex: 1 }}>Device name</Text>
+              <Text style={{ fontSize: 16, marginLeft: 20, marginRight: 10, flex: 1 }}>Tên thiết bị</Text>
               <TextInput
                 style={{ flex: 2, borderColor: "#000000", borderWidth: 1, margin: 5, padding: 10, borderRadius: 5 }}
                 onChangeText={onChangeName}

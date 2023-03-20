@@ -82,7 +82,7 @@ export default Login = ({ navigation, route }) => {
         style={{ padding: 10, backgroundColor: "#dddddd", alignItems: "center", margin: 10 }}
         onPress = {() => getToken()}
         >
-          <Text>Login</Text>
+          <Text>Đăng nhập</Text>
         </TouchableOpacity>
         {falseLogin && <Text style={{ color: "#FF000B", alignSelf: "center" }}> Email or password wrong! </Text>}
       </View>

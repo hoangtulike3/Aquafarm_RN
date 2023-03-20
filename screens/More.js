@@ -3,6 +3,39 @@ import { useEffect } from 'react';
 // import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image, Alert } from 'react-native';
 
+import BackgroundService from 'react-native-background-actions';
+
+// You can do anything in your task such as network requests, timers and so on,
+// as long as it doesn't touch UI. Once your task completes (i.e. the promise is resolved),
+// React Native will go into "paused" mode (unless there are other tasks running,
+// or there is a foreground app).
+const veryIntensiveTask = async (taskDataArguments) => {
+    // Example of an infinite loop task
+    console.log("RUN BEHIND");
+};
+
+const options = {
+    taskName: 'Get Data',
+    taskTitle: 'Get Data',
+    taskDesc: 'Check values of sensor with Min/Max',
+    taskIcon: {
+        name: 'ic_launcher',
+        type: 'mipmap',
+    },
+    color: '#ff00ff',
+    // linkingURI: 'yourSchemeHere://chat/jane', // See Deep Linking for more info
+    // parameters: {
+    //     delay: 1000,
+    // },
+};
+
+const backgroundtask = async () => {
+  await BackgroundService.start(veryIntensiveTask(10000), options);
+  // await BackgroundService.updateNotification({taskDesc: 'New ExampleTask description'}); // Only Android, iOS will ignore this call
+  // iOS will also run everything here in the background until .stop() is called
+  // await BackgroundService.stop();
+}
+
 export default More = ({ navigation, route, infor }) => {
   const getData = async () => {
     try {
@@ -50,30 +83,34 @@ export default More = ({ navigation, route, infor }) => {
             <TouchableOpacity style={{ borderRadius: 5, borderWidth: 1, borderColor: "#dedede", padding: 10, width: "100%", flexDirection: "row", alignItems: "center" }} 
             onPress={() => {
               Alert.alert(
-                "About this application",
-                "This application is made by MANGROVESYSTEM\n\n Version: 1.0.0",
+                "Thông tin về phần mềm",
+                "Phần mềm được phát triển bởi CÔNG TY TNHH MANGROVESYSTEM\n\n Version: 1.0.0",
                 [
                   {
-                    text: "Cancel",
+                    text: "Thoát",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                   },
-                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                  { text: "OK", onPress: () => {
+                    console.log("OK Pressed")
+                    backgroundtask();
+                    } 
+                  }
                 ]
               );
             }}
             >
               <Image source={require('../images/my-info.png')} style={{ width: 20, height: 20, marginRight: 10 }}/>
-              <Text>App info</Text>
+              <Text>Thông tin về ứng dụng</Text>
               <View style={{ position: "absolute", right: 0, marginRight: 10 }}>
                 <Image source={require('../images/info.png')} style={{ width: 15, height: 15 }}/>
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={{ marginBottom: 10, color: "#bababa" }}>Change my status</Text>
+          {/* <Text style={{ marginBottom: 10, color: "#bababa" }}>Thay đổi trạng thái hoặt động</Text> */}
         </View>
       </View>
-      <Button title='Log out' onPress={() => logout()}/>
+      <Button title='Đăng xuất' onPress={() => logout()}/>
     </View>
     
   );
