@@ -42,7 +42,7 @@ export default Chart = ({ navigation, route }) => {
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
-        navigation.navigate('Login');
+        // navigation.navigate('Login');
       });
     // setTimeout(() => { 
     //   // getEdgeServerInfo();
@@ -98,6 +98,14 @@ export default Chart = ({ navigation, route }) => {
           setSensor3(sensor3 => [...sensor3, Number(_5data[2].slice(1))]);
           setSensor4(sensor4 => [...sensor4, Number(_5data[3].slice(1))]);
           setRelayStt([_5data[4][0],_5data[4][1],_5data[4][2],_5data[4][3],_5data[4][4],_5data[4][5],_5data[4][6],_5data[4][7]]);
+        }
+        else if(_5data.length == 4)
+        {
+          setSensor1(sensor1 => [...sensor1, Number(_5data[0].slice(1))]);
+          setSensor2(sensor2 => [...sensor2, Number(_5data[1].slice(1))]);
+          setSensor3(sensor3 => [...sensor3, Number(_5data[2].slice(1))]);
+          setSensor4(sensor4 => [...sensor4, Number(_5data[3].slice(1))]);
+          setRelayStt(["0","0","0","0","0","0","0","0"])
         }
         else
         {

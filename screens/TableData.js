@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, Dimensions, View, ScrollView, RefreshControl, Image, TouchableOpacity, Switch, Linking } from 'react-native';
 import { Buffer } from "buffer";
-import { LineChart } from "react-native-chart-kit";
 
 export default TableData = ({ navigation, route }) => {
   const { devName_chart, devEUI_chart, sensorType_chart } = route.params;
@@ -36,7 +35,7 @@ export default TableData = ({ navigation, route }) => {
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
-        navigation.navigate('Login');
+        // navigation.navigate('Login');
       });
     // setTimeout(() => { 
     //   // getEdgeServerInfo();
@@ -74,6 +73,13 @@ export default TableData = ({ navigation, route }) => {
         // console.log(data);
         const _4data = data.split("/");
         if(_4data.length == 5 )
+        {
+          setSensor1(sensor1 => [...sensor1, Number(_4data[0].slice(1))]);
+          setSensor2(sensor2 => [...sensor2, Number(_4data[1].slice(1))]);
+          setSensor3(sensor3 => [...sensor3, Number(_4data[2].slice(1))]);
+          setSensor4(sensor4 => [...sensor4, Number(_4data[3].slice(1))]);
+        }
+        else if(_4data.length == 4)
         {
           setSensor1(sensor1 => [...sensor1, Number(_4data[0].slice(1))]);
           setSensor2(sensor2 => [...sensor2, Number(_4data[1].slice(1))]);

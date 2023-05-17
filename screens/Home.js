@@ -29,7 +29,7 @@ export default Home = ({ navigation, route, props }) => {
       </Tab.Screen>
 
       {/* <Tab.Screen name="Home" component={ConnectWifi} /> */}
-      <Tab.Screen name="Connect" component={Connect} 
+      <Tab.Screen name="Connect"
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -38,7 +38,9 @@ export default Home = ({ navigation, route, props }) => {
             />
           ),
         }}
-      />
+      >
+        {() => <Connect navigation={navigation} infor={route.params.infor} />}
+      </Tab.Screen>
       <Tab.Screen name="More"
         options={{
           tabBarIcon: ({ color, size }) => (

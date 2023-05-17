@@ -22,7 +22,8 @@ export default AddDevice = ({ navigation, route }) => {
         },
         body: JSON.stringify({
           "email": email,
-          "dev_eui": devEUI
+          "dev_eui": devEUI,
+          "device_name": name
         })
       })
         .then((response) => response.json())
@@ -63,6 +64,11 @@ export default AddDevice = ({ navigation, route }) => {
       <View style={{ paddingTop: 20 }}>
       {/* <View style={{ flex: 1, backgroundColor: '#673ab7' }} > */}
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <TouchableOpacity style={{ width: 60, height: 30, alignSelf: "center", alignItems: "center", borderRadius: 5, justifyContent: "center", position: "absolute", left: 10, backgroundColor: "#ffffff" }} 
+          onPress={() => navigation.navigate('MyPage')}
+          >
+            <Text>Huỷ</Text>
+          </TouchableOpacity>
           <Text style={{ fontSize: 30, marginBottom: 10, fontWeight: "bold", alignSelf: "center" }}>Thêm thiết bị</Text>
           <TouchableOpacity style={{ width: 60, height: 30, alignSelf: "center", alignItems: "center", borderRadius: 5, justifyContent: "center", position: "absolute", right: 10, backgroundColor: "#ffffff" }} 
           onPress={() => postDevicesOfUsers()}

@@ -30,7 +30,7 @@ export default MyPage = ({ navigation, route, infor }) => {
       })
       .catch((error) => {
         console.error(error);
-        navigation.navigate('Login');
+        // navigation.navigate('Login');
       });
   };
 
@@ -39,11 +39,12 @@ export default MyPage = ({ navigation, route, infor }) => {
     fetch('http://35.79.124.43:3000/device', {
       method: 'DELETE',
       headers: {
-        'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + TokenValue
       },
       body: JSON.stringify({
-        "dev_eui": devEui
+        "dev_eui": devEui,
+        "email": infor.email
       })
     }).then((response) => response.json())
       .then((json) => {
@@ -68,7 +69,14 @@ export default MyPage = ({ navigation, route, infor }) => {
     }
     else
     {
-      return ["t0", "d0", "p0", "n0", "00000000"]
+      if(_4data.length == 4 )
+      {
+        return [_4data[0], _4data[1], _4data[2], _4data[3], "00000000"]
+      }
+      else
+      {
+        return ["t0", "d0", "p0", "n0", "00000000"]
+      }
     }
   }
 
@@ -184,12 +192,12 @@ export default MyPage = ({ navigation, route, infor }) => {
     }, 1000);
     // runNotification();
   },[]);
-  useEffect(() => {
-    setTimeout(() => {
-      onRefresh();
-    }, 60000);
-    checkwarning(values);
-  },[values])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     onRefresh();
+  //   }, 60000);
+  //   checkwarning(values);
+  // },[values])
 
   return (
     <View style={{ flex: 1, paddingTop: 20 }}>
@@ -226,7 +234,7 @@ export default MyPage = ({ navigation, route, infor }) => {
                   <View style={{ flexDirection: "row", alignItems: "center", height: 40 }}>
                     <Text style={{ fontSize: 16, marginLeft: 20 }}>Tên thiết bị</Text>
                     <View style={{ position: "absolute", right: 0 }}>
-                      <Text style={{ fontSize: 16, marginLeft: 20 }}>{ value.device_name }</Text>
+                      <Text style={{ fontSize: 16, marginLeft: 20 }}>{ value.deviceInfor.device_name }</Text>
                     </View>
                   </View>
                   <TouchableOpacity style={{ marginHorizontal: 20, height: 60, borderTopWidth: 1, borderTopColor: "#dedede" }}
@@ -234,8 +242,8 @@ export default MyPage = ({ navigation, route, infor }) => {
                     let devEui = Buffer(value.dev_eui).toString("hex");
                     console.log(devEui);
                     navigation.navigate('Chart', {
-                      devName_chart: value.device_name,
-                      devEUI_chart: devEui
+                      devName_chart: value.deviceInfor.device_name,
+                      devEUI_chart: value.deviceInfor.dev_eui
                     });
                   }}
                   onLongPress={() => {
@@ -292,7 +300,7 @@ export default MyPage = ({ navigation, route, infor }) => {
                   <TouchableOpacity style={{ marginHorizontal: 20, flexDirection: "row", alignItems: "center", height: 40, borderTopWidth: 1, borderTopColor: "#dedede" }}
                   onLongPress={() => {
                     let devEui = Buffer(value.dev_eui).toString("hex");
-                    // console.log(devEui);
+                    console.log(value.deviceInfor.dev_eui);
                     Alert.alert(
                       "Xoá thiết bị",
                       "Bạn có muốn xoá thiết bị có tên 'null' không?",
@@ -302,7 +310,7 @@ export default MyPage = ({ navigation, route, infor }) => {
                           onPress: () => console.log("Cancel Pressed"),
                           style: "No"
                         },
-                        { text: "Có", onPress: () => deleteDevice(devEui) }
+                        { text: "Có", onPress: () => deleteDevice(value.deviceInfor.dev_eui) }
                       ]
                     );
                   }}
