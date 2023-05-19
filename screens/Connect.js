@@ -30,7 +30,10 @@ import RNBluetoothClassic, {
   BluetoothDevice,
 } from "react-native-bluetooth-classic";
 import { Dropdown } from 'react-native-element-dropdown';
+import { BleManager } from 'react-native-ble-plx';
 // import { LineChart } from "react-native-chart-kit";
+
+export const manager = new BleManager();
 
 export default Connect = ({ navigation, route, infor }) => {
   const [list, setList] = useState([]);
@@ -43,7 +46,7 @@ export default Connect = ({ navigation, route, infor }) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
 
-  const connectBluetooth = async () => {
+const connectBluetooth = async () => {
     try {
       // const list = await RNBluetoothClassic.list();
       // console.log("list:", list)
@@ -56,6 +59,19 @@ export default Connect = ({ navigation, route, infor }) => {
     } catch (err) {
       // Handle accordingly
       console.log(err);
+        const btState = await manager.state()
+        // test is bluetooth is supported
+        if (btState==="Unsupported") {
+          Alert("Bluetooth is not supported");
+          // return (false);
+        }
+        // enable if it is not powered on
+        if (btState!=="PoweredOn") {
+          await manager.enable();
+        } else {
+          await manager.disable();
+        }
+        // return (true);
     }
   }
 
