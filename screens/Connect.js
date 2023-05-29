@@ -21,6 +21,7 @@ import {
   PermissionsAndroid,
   FlatList,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import {
   Colors,
@@ -31,6 +32,8 @@ import RNBluetoothClassic, {
 } from "react-native-bluetooth-classic";
 import { Dropdown } from 'react-native-element-dropdown';
 import { BleManager } from 'react-native-ble-plx';
+import {check, PERMISSIONS, requestMultiple, RESULTS} from 'react-native-permissions';
+import DeviceInfo from 'react-native-device-info';
 // import { LineChart } from "react-native-chart-kit";
 
 export const manager = new BleManager();
@@ -46,7 +49,7 @@ export default Connect = ({ navigation, route, infor }) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
 
-const connectBluetooth = async () => {
+  const connectBluetooth = async () => {
     try {
       // const list = await RNBluetoothClassic.list();
       // console.log("list:", list)
