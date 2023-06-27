@@ -381,11 +381,11 @@ export default Connect = ({ navigation, route, infor }) => {
               
               <View style={{ position: "absolute", flexDirection: "row", bottom: 55, left: 0, backgroundColor: "#ffffff", 
               width: "100%", height: 50, paddingLeft: 10, paddingRight: 10 }}>
-                <TouchableOpacity style={{ backgroundColor: "#0088ff", width: "100%", height: 50, alignItems: "center", 
+                <TouchableHighlight style={{ backgroundColor: "#0088ff", width: "100%", height: 50, alignItems: "center", 
                 justifyContent: "center", borderRadius: 10 }} 
                 onPress={() => sendPress(deviceConnected, "GET\r\n")}>
                   <Text style={{ color: "#ffffff", fontSize: 20 }}>GET DATA FROM DEVICE</Text>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
               <View style={{ position: "absolute", flexDirection: "row", bottom: 0, left: 0, backgroundColor: "#ffffff", 
               width: "100%", height: 50, paddingLeft: 10, paddingRight: 10 }}>
@@ -414,11 +414,11 @@ export default Connect = ({ navigation, route, infor }) => {
                   <Button style={{ flex: 2, width: 50 }} title="  SET  " onPress={() => setSet(true)}/>
                 } */}
                 
-                <TouchableOpacity style={{ backgroundColor: "#0088ff", width: "100%", height: 50, alignItems: "center", 
+                <TouchableHighlight style={{ backgroundColor: "#0088ff", width: "100%", height: 50, alignItems: "center", 
                 justifyContent: "center", borderRadius: 10 }} 
                 onPress={() => postDataOfDevice(newestData[0], newestData[1], newestData[2], newestData[3], newestData[4])}>
                   <Text style={{ color: "#ffffff", fontSize: 20 }}>SEND DATA TO CLOUD</Text>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
             </View>
           ) : (
